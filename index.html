@@ -1,0 +1,1309 @@
+<!DOCTYPE html>
+
+<html lang="ru">
+ <head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1" name="viewport"/>
+  <title>
+   Nikita Yaroslavtsev — Interactive CV
+  </title>
+  <style>
+   :root {
+        --bg: #0a0a0a;
+        --panel: rgba(255, 255, 255, 0.06);
+        --border: rgba(255, 255, 255, 0.12);
+        --muted: rgba(255, 255, 255, 0.6);
+        --accent: rgba(59, 130, 246, 0.95);
+        --shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+      }
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial;
+        background: var(--bg);
+        color: #fff;
+      }
+      .page { padding-bottom: 118px; }
+      .container { max-width: 1300px; margin: 0 auto; padding: 20px; }
+      .grid { display: grid; gap: 18px; align-items: start; }
+      @media (min-width: 1200px) { .grid { grid-template-columns: 340px 1fr 380px; } }
+      @media (max-width: 1199px) { .grid { grid-template-columns: 1fr; } }
+      .card {
+        background: var(--panel);
+        border: 1px solid var(--border);
+        border-radius: 22px;
+        box-shadow: var(--shadow);
+        overflow: hidden;
+      }
+      .pad { padding: 18px; }
+
+      /* --- Selection state (CSS-only, persistent) --- */
+      .state {
+        position: absolute;
+        left: -9999px;
+        width: 1px;
+        height: 1px;
+        overflow: hidden;
+      }
+
+      /* --- Resume --- */
+      .resume { position: sticky; top: 20px; height: fit-content; }
+      .profile { display: flex; gap: 14px; align-items: center; }
+      .avatar {
+        width: 80px; height: 80px; border-radius: 22px;
+        border: 1px solid var(--border);
+        overflow: hidden; flex: 0 0 auto;
+        background: radial-gradient(60% 60% at 30% 30%, rgba(255, 255, 255, 0.16), transparent 60%),
+          rgba(255, 255, 255, 0.06);
+      }
+      .avatar img { width: 100%; height: 100%; object-fit: cover; display: block; }
+      .name h1 { margin: 0; font-size: 20px; }
+      .name p { margin: 4px 0 0; font-size: 13px; color: var(--muted); }
+      h3 { font-size: 12px; text-transform: uppercase; letter-spacing: 1px; color: #aaa; margin: 18px 0 8px; }
+      p { font-size: 14px; line-height: 1.5; color: #ddd; margin: 0; }
+      .chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+      .chip { padding: 6px 10px; border-radius: 999px; background: rgba(255, 255, 255, 0.08); border: 1px solid var(--border); font-size: 12px; }
+      .lang { margin-top: 8px; }
+      .lang-row { display: flex; justify-content: space-between; font-size: 13px; margin: 6px 0; }
+      a.link { color: rgba(255, 255, 255, 0.86); text-decoration: none; border-bottom: 1px solid rgba(255, 255, 255, 0.18); }
+      a.link:hover { border-bottom-color: rgba(255, 255, 255, 0.45); }
+
+      /* --- Panels --- */
+      .panel { display: none; position: sticky; top: 20px; padding: 18px; }
+      .panel h2 { margin: 0 0 6px; }
+      .meta { font-size: 12px; color: var(--muted); margin-bottom: 10px; }
+      .close {
+        float: right;
+        text-decoration: none;
+        color: #fff;
+        border: 1px solid var(--border);
+        padding: 4px 10px;
+        border-radius: 10px;
+        cursor: pointer;
+        user-select: none;
+        z-index: 2;
+        margin-bottom: 10px;
+      }
+      .nav-arrows { margin-top: 16px; display: flex; justify-content: space-between; gap: 10px; }
+      .arrow {
+        flex: 1 1 0;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        border: 1px solid var(--border);
+        background: rgba(255, 255, 255, 0.06);
+        color: rgba(255, 255, 255, 0.9);
+        padding: 10px 12px;
+        border-radius: 14px;
+        cursor: pointer;
+        user-select: none;
+      }
+      .arrow:hover { background: rgba(255, 255, 255, 0.1); }
+      .arrow span { opacity: 0.8; font-size: 13px; }
+      .nav-arrows--single { justify-content: flex-end; }
+
+      /* Panel hero images (favicon-based, from each website) */
+      .hero {
+        width: 100%;
+        height: 112px;
+        border-radius: 18px;
+        border: 1px solid var(--border);
+        overflow: hidden;
+        margin-bottom: 12px;
+        position: relative;
+        background: rgba(255,255,255,0.05);
+      }
+      .hero img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+        filter: saturate(1) contrast(1.05);
+      }
+      .hero::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(to bottom, rgba(0,0,0,0.05), rgba(0,0,0,0.1));
+        pointer-events: none;
+      }
+
+      /* --- Map --- */
+      .map-wrap {
+        position: relative;
+        height: 680px;
+        min-height: 520px;
+        background: #0a0a0a;
+      }
+
+      .mapLayer {
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        width: 520%;
+        height: 520%;
+        transform-origin: 50% 50%;
+
+        --camScale: 1.00;
+        --camX: 0%;
+        --camY: 0%;
+
+        transform:
+          translate(-50%, -50%)
+          translate(var(--camX), var(--camY))
+          scale(var(--camScale));
+
+        transition: transform 0.6s;
+        isolation: isolate;
+
+        background-color: #0b0b0b;
+        background-image: url("https://upload.wikimedia.org/wikipedia/commons/8/80/World_map_-_low_resolution.svg");
+        background-position: 50% 50%;
+        background-size: 100% 100%;
+        background-repeat: no-repeat;
+      }
+
+      /* Border enhancer */
+      .mapLayer::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+        background: inherit;
+        opacity: 0.22;
+        mix-blend-mode: screen;
+        filter: invert(1) brightness(1.9) contrast(2.2);
+        z-index: 0;
+      }
+
+      .pin {
+        position: absolute;
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        background: var(--accent);
+        border: 2px solid #fff;
+        transform: translate(-50%, -50%);
+        box-shadow: 0 10px 22px rgba(0, 0, 0, 0.35);
+        cursor: pointer;
+        user-select: none;
+        z-index: 2;
+      }
+
+      /* Tooltip: 2 lines (title + city) */
+      .pin::before {
+        content: attr(data-title) "\A" attr(data-city);
+        position: absolute;
+        left: 50%;
+        bottom: 135%;
+        transform: translateX(-50%);
+        white-space: pre;
+        text-align: center;
+        line-height: 1.15;
+        font-size: 8px;
+        color: rgba(255, 255, 255, 0.92);
+        background: rgba(10, 10, 10, 0.86);
+        border: 1px solid var(--border);
+        padding: 5px 7px;
+        border-radius: 12px;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 160ms ease;
+        max-width: 240px;
+      }
+
+      /* Hover tooltip */
+      .pin:hover::before { opacity: 1; }
+
+      /* When ANY pin is hovered, show only hovered tooltip (hide the selected one temporarily). */
+      .mapLayer:has(.pin:hover) .pin::before { opacity: 0; }
+      .mapLayer:has(.pin:hover) .pin:hover::before { opacity: 1; }
+
+      .pin:hover {
+        box-shadow:
+          0 0 0 6px rgba(59, 130, 246, 0.16),
+          0 14px 30px rgba(0, 0, 0, 0.45);
+      }
+
+      /* --- Timeline --- */
+      .timeline {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background: #0f0f10;
+        border-top: 1px solid var(--border);
+        padding: 14px;
+        z-index: 50;
+      }
+      .timeline-inner { max-width: 1300px; margin: 0 auto; }
+      .track { position: relative; height: 64px; }
+      .line {
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 22px;
+        height: 2px;
+        transform: translateY(-50%);
+        background: rgba(255, 255, 255, 0.16);
+      }
+      .events {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+      }
+      .event {
+        flex: 1 1 0;
+        color: #ccc;
+        font-size: 12px;
+        text-align: center;
+        position: relative;
+        cursor: pointer;
+        user-select: none;
+      }
+      .dot {
+        width: 14px;
+        height: 14px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.18);
+        border: 2px solid rgba(255, 255, 255, 0.35);
+        margin: 15px auto 8px;
+        transition: all 160ms ease;
+        position: relative;
+        z-index: 2;
+      }
+      .event:hover .dot { background: rgba(255, 255, 255, 0.45); border-color: rgba(255, 255, 255, 0.7); }
+      .date { display: block; color: rgba(255, 255, 255, 0.55); }
+
+      /* --- State-driven visibility / styling --- */
+      #s-none:checked ~ .container #p-none,
+      #s-nstu:checked ~ .container #p-nstu,
+      #s-itmo:checked ~ .container #p-itmo,
+      #s-ivl-dev:checked ~ .container #p-ivl-dev,
+      #s-gap:checked ~ .container #p-gap,
+      #s-bsxr:checked ~ .container #p-bsxr,
+      #s-ivl-lead:checked ~ .container #p-ivl-lead {
+        display: block;
+      }
+
+      /* Selected timeline (persistent) */
+      #s-nstu:checked ~ .timeline .event[for="s-nstu"] .dot,
+      #s-itmo:checked ~ .timeline .event[for="s-itmo"] .dot,
+      #s-ivl-dev:checked ~ .timeline .event[for="s-ivl-dev"] .dot,
+      #s-gap:checked ~ .timeline .event[for="s-gap"] .dot,
+      #s-bsxr:checked ~ .timeline .event[for="s-bsxr"] .dot,
+      #s-ivl-lead:checked ~ .timeline .event[for="s-ivl-lead"] .dot {
+        background: rgba(255, 255, 255, 0.7);
+        border-color: rgba(255, 255, 255, 0.95);
+        box-shadow: 0 0 0 6px rgba(59, 130, 246, 0.18);
+      }
+      #s-nstu:checked ~ .timeline .event[for="s-nstu"] .date,
+      #s-itmo:checked ~ .timeline .event[for="s-itmo"] .date,
+      #s-ivl-dev:checked ~ .timeline .event[for="s-ivl-dev"] .date,
+      #s-gap:checked ~ .timeline .event[for="s-gap"] .date,
+      #s-bsxr:checked ~ .timeline .event[for="s-bsxr"] .date,
+      #s-ivl-lead:checked ~ .timeline .event[for="s-ivl-lead"] .date {
+        color: rgba(255, 255, 255, 0.85);
+        font-weight: 700;
+      }
+
+      /* Selected pin (persistent) */
+      #s-nstu:checked ~ .container .pin[for="s-nstu"],
+      #s-itmo:checked ~ .container .pin[for="s-itmo"],
+      #s-ivl-dev:checked ~ .container .pin[for="s-ivl-dev"],
+      #s-gap:checked ~ .container .pin[for="s-gap"],
+      #s-bsxr:checked ~ .container .pin[for="s-bsxr"],
+      /* Lead uses the same map pin as IVL Dev */
+      #s-ivl-lead:checked ~ .container .pin[for="s-ivl-dev"] {
+        background: rgba(255, 255, 255, 0.95);
+        border-color: rgba(59, 130, 246, 0.95);
+        box-shadow:
+          0 0 0 6px rgba(59, 130, 246, 0.22),
+          0 14px 30px rgba(0, 0, 0, 0.45);
+      }
+
+      /* Selected tooltip should be visible (until hovering another pin) */
+      #s-nstu:checked ~ .container .pin[for="s-nstu"]::before,
+      #s-itmo:checked ~ .container .pin[for="s-itmo"]::before,
+      #s-ivl-dev:checked ~ .container .pin[for="s-ivl-dev"]::before,
+      #s-gap:checked ~ .container .pin[for="s-gap"]::before,
+      #s-bsxr:checked ~ .container .pin[for="s-bsxr"]::before,
+      #s-ivl-lead:checked ~ .container .pin[for="s-ivl-dev"]::before {
+        opacity: 1;
+      }
+
+      /* Camera presets (from your updated file) */
+      #s-none:checked ~ .container .mapLayer { --camScale: 0.90; --camX: -10%; --camY: 7%; }
+
+      #s-nstu:checked ~ .container .mapLayer { --camScale: 2; --camX: -38%; --camY: 19%; }
+      #s-itmo:checked ~ .container .mapLayer { --camScale: 2.5; --camX: -14%; --camY: 25%; }
+      #s-ivl-dev:checked ~ .container .mapLayer { --camScale: 2.5; --camX: -12.8%; --camY: 24%; }
+      #s-gap:checked ~ .container .mapLayer { --camScale: 2.5; --camX: -17.5%; --camY: 22%; }
+      #s-bsxr:checked ~ .container .mapLayer { --camScale: 2.5; --camX: -18.5%; --camY: 22%; }
+      #s-ivl-lead:checked ~ .container .mapLayer { --camScale: 2.5; --camX: -12.8%; --camY: 24%; }
+
+      @media (prefers-reduced-motion: reduce) {
+        .mapLayer { transition: none; }
+      }
+    
+      .lang-btn {
+        border: 1px solid var(--border);
+        background: rgba(255, 255, 255, 0.06);
+        color: rgba(255, 255, 255, 0.92);
+        padding: 8px 12px;
+        border-radius: 14px;
+        cursor: pointer;
+        user-select: none;
+        font-size: 12px;
+      }
+      .lang-btn:hover { background: rgba(255, 255, 255, 0.10); }
+      .lang-btn:active { transform: translateY(1px); }
+
+
+      /* --- Language toggle (top-right corner) --- */
+      aside.resume { position: relative; }
+
+      .lang-switch {
+        position: absolute;
+        top: 18px;
+        right: 18px;
+        margin: 0;
+      }
+
+      .lang-btn {
+        border: 1px solid var(--border);
+        background: rgba(255, 255, 255, 0.06);
+        color: rgba(255, 255, 255, 0.92);
+        padding: 8px 14px;
+        border-radius: 999px;
+        cursor: pointer;
+        user-select: none;
+        font-size: 12px;
+        backdrop-filter: blur(6px);
+      }
+
+      .lang-btn:hover { background: rgba(255, 255, 255, 0.10); }
+      .lang-btn:active { transform: translateY(1px); }
+
+
+      /* --- Language toggle override (flush to resume card border) --- */
+      aside.resume { position: relative; }
+
+      .lang-switch {
+        position: absolute;
+        top: -1px;   /* align with card border thickness */
+        right: -1px; /* align with card border thickness */
+        margin: 0 !important;
+        padding: 0 !important;
+        z-index: 20;
+      }
+
+      .lang-btn {
+        border: 1px solid var(--border);
+        border-radius: 0 22px 0 22px; /* match card corner */
+      }
+
+
+      /* --- Alignment fix: keep resume card level with others --- */
+      .resume { top: 0px; }
+  
+/* ===== DARK BLUE THEME OVERRIDE ===== */
+
+:root {
+  --bg: radial-gradient(circle at 20% 20%, #0f1c2b 0%, #05080d 60%, #000000 100%);
+  --panel: linear-gradient(145deg, rgba(8, 20, 40, 0.9), rgba(5, 10, 20, 0.85));
+  --border: rgba(0, 170, 255, 0.25);
+  --muted: rgba(180, 220, 255, 0.6);
+  --accent: #00aaff;
+  --glow: 0 0 25px rgba(0, 170, 255, 0.35);
+  --shadow: 0 20px 60px rgba(0, 0, 0, 0.7);
+}
+
+body {
+  background: var(--bg);
+  background-attachment: fixed;
+  color: #e6f4ff;
+}
+
+.card {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow), var(--glow);
+  backdrop-filter: blur(10px);
+  transition: all 0.3s ease;
+}
+
+.card:hover {
+  box-shadow:
+    0 0 40px rgba(0, 170, 255, 0.45),
+    0 20px 60px rgba(0, 0, 0, 0.8);
+  border-color: rgba(0, 200, 255, 0.6);
+}
+
+.pin {
+  background: var(--accent);
+  border: 2px solid #0a0f1c;
+  box-shadow:
+    0 0 15px rgba(0, 170, 255, 0.7),
+    0 10px 22px rgba(0, 0, 0, 0.5);
+}
+
+.line {
+  background: linear-gradient(
+    90deg,
+    rgba(0, 170, 255, 0.2),
+    rgba(0, 170, 255, 0.8),
+    rgba(0, 170, 255, 0.2)
+  );
+}
+
+.dot {
+  background: rgba(0, 170, 255, 0.3);
+  border: 2px solid rgba(0, 170, 255, 0.8);
+  box-shadow: 0 0 10px rgba(0, 170, 255, 0.5);
+}
+
+.map-wrap {
+  background: radial-gradient(circle at center, #081425 0%, #000000 100%);
+}
+
+/* ===== END THEME ===== */
+
+
+/* ===== Timeline Gradient Background ===== */
+.timeline {
+  background: linear-gradient(
+    to top,
+    #000000 0%,
+    #071426 40%,
+    #0a1c33 70%,
+    rgba(10, 28, 51, 0.6) 100%
+  ) !important;
+  backdrop-filter: blur(8px);
+  border-top: 1px solid rgba(0, 170, 255, 0.25);
+}
+/* ===== End Timeline Gradient ===== */
+
+
+/* ===== Timeline: Glass + Animated Gradient + Platform Glow ===== */
+.timeline {
+  /* glass layer */
+  background: linear-gradient(
+    135deg,
+    rgba(0, 170, 255, 0.10) 0%,
+    rgba(8, 20, 38, 0.88) 45%,
+    rgba(0, 170, 255, 0.08) 100%
+  ) !important;
+
+  backdrop-filter: blur(14px) saturate(1.25);
+  -webkit-backdrop-filter: blur(14px) saturate(1.25);
+
+  border-top: 1px solid rgba(0, 170, 255, 0.28);
+  box-shadow:
+    0 -10px 35px rgba(0, 170, 255, 0.10),
+    0 -2px 0 rgba(0, 170, 255, 0.10),
+    0 18px 50px rgba(0, 0, 0, 0.75);
+
+  position: fixed; /* keep original behavior */
+  overflow: hidden; /* contain glow layers */
+}
+
+/* animated gradient sheen */
+.timeline::before {
+  content: "";
+  position: absolute;
+  inset: -40% -25%;
+  pointer-events: none;
+  background:
+    radial-gradient(circle at 20% 30%, rgba(0, 170, 255, 0.22) 0%, rgba(0, 170, 255, 0.0) 55%),
+    radial-gradient(circle at 80% 60%, rgba(0, 170, 255, 0.14) 0%, rgba(0, 170, 255, 0.0) 60%),
+    linear-gradient(120deg,
+      rgba(0, 170, 255, 0.00) 0%,
+      rgba(0, 170, 255, 0.14) 30%,
+      rgba(0, 170, 255, 0.05) 55%,
+      rgba(0, 170, 255, 0.00) 100%
+    );
+  filter: blur(10px);
+  opacity: 0.95;
+  transform: translate3d(-8%, 0, 0);
+  animation: tlSheen 10s ease-in-out infinite;
+  z-index: 0;
+}
+
+/* platform glow under the timeline */
+.timeline::after {
+  content: "";
+  position: absolute;
+  left: -10%;
+  right: -10%;
+  bottom: -55px;
+  height: 120px;
+  pointer-events: none;
+  background: radial-gradient(closest-side at 50% 0%,
+    rgba(0, 170, 255, 0.55) 0%,
+    rgba(0, 170, 255, 0.28) 28%,
+    rgba(0, 170, 255, 0.12) 45%,
+    rgba(0, 170, 255, 0.00) 70%
+  );
+  filter: blur(18px);
+  opacity: 0.95;
+  animation: tlGlowPulse 4.8s ease-in-out infinite;
+  z-index: 0;
+}
+
+/* ensure timeline content stays above glow layers */
+.timeline-inner,
+.timeline .track,
+.timeline .events,
+.timeline .line,
+.timeline .event,
+.timeline .dot,
+.timeline span,
+.timeline label {
+  position: relative;
+  z-index: 1;
+}
+
+/* animated line to match */
+.timeline .line {
+  background: linear-gradient(
+    90deg,
+    rgba(0, 170, 255, 0.10),
+    rgba(0, 170, 255, 0.90),
+    rgba(0, 170, 255, 0.10)
+  ) !important;
+  box-shadow: 0 0 16px rgba(0, 170, 255, 0.28);
+  animation: tlLineBreath 3.2s ease-in-out infinite;
+}
+
+/* slightly glassy dots */
+.timeline .dot {
+  background: rgba(0, 170, 255, 0.22) !important;
+  border-color: rgba(0, 190, 255, 0.85) !important;
+  box-shadow:
+    0 0 14px rgba(0, 170, 255, 0.55),
+    inset 0 0 10px rgba(255, 255, 255, 0.08);
+}
+
+/* animations */
+@keyframes tlSheen {
+  0%   { transform: translate3d(-10%, 0%, 0) rotate(0.5deg); opacity: 0.85; }
+  50%  { transform: translate3d(8%, -2%, 0) rotate(-0.5deg); opacity: 1.0; }
+  100% { transform: translate3d(-10%, 0%, 0) rotate(0.5deg); opacity: 0.85; }
+}
+
+@keyframes tlGlowPulse {
+  0%, 100% { transform: translateY(0); opacity: 0.80; }
+  50%      { transform: translateY(-6px); opacity: 1.00; }
+}
+
+@keyframes tlLineBreath {
+  0%, 100% { opacity: 0.75; filter: saturate(1.0); }
+  50%      { opacity: 1.00; filter: saturate(1.25); }
+}
+
+/* Respect reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .timeline::before,
+  .timeline::after,
+  .timeline .line {
+    animation: none !important;
+  }
+}
+/* ===== End Timeline Enhancements ===== */
+
+
+/* ===== Timeline Darker Background + Perfect Line Alignment Fix ===== */
+
+/* 1) Darker area behind timeline */
+.timeline {
+  background: linear-gradient(
+    135deg,
+    rgba(0, 120, 200, 0.08) 0%,
+    rgba(4, 10, 18, 0.96) 40%,
+    rgba(0, 0, 0, 0.98) 100%
+  ) !important;
+}
+
+/* Darker platform glow */
+.timeline::after {
+  background: radial-gradient(closest-side at 50% 0%,
+    rgba(0, 170, 255, 0.35) 0%,
+    rgba(0, 170, 255, 0.18) 25%,
+    rgba(0, 170, 255, 0.06) 45%,
+    rgba(0, 170, 255, 0.00) 70%
+  );
+}
+
+/* 2) Fix timeline line vertical alignment */
+.timeline .track {
+  position: relative;
+}
+
+.timeline .line {
+  position: absolute !important;
+  left: 0;
+  right: 0;
+  top: 22px;              /* exact center relative to dots */
+  height: 2px;
+  transform: translateY(-50%);
+  margin: 0 !important;
+}
+
+/* Ensure dots stay perfectly centered visually */
+.timeline .dot {
+  margin: 15px auto 8px !important;
+}
+
+/* ===== End Fix ===== */
+
+
+/* ===== Darker Animated Gradient Behind Timeline ===== */
+
+.timeline {
+  background: linear-gradient(
+    140deg,
+    rgba(0, 90, 160, 0.06) 0%,
+    rgba(2, 6, 12, 0.98) 45%,
+    rgba(0, 0, 0, 1.0) 100%
+  ) !important;
+}
+
+/* Darker animated sheen layer */
+.timeline::before {
+  background:
+    radial-gradient(circle at 20% 30%, rgba(0, 140, 255, 0.12) 0%, rgba(0, 140, 255, 0.0) 60%),
+    radial-gradient(circle at 80% 60%, rgba(0, 140, 255, 0.08) 0%, rgba(0, 140, 255, 0.0) 65%),
+    linear-gradient(120deg,
+      rgba(0, 140, 255, 0.00) 0%,
+      rgba(0, 140, 255, 0.08) 30%,
+      rgba(0, 140, 255, 0.03) 55%,
+      rgba(0, 140, 255, 0.00) 100%
+    );
+  opacity: 0.75;
+}
+
+/* Darker platform glow */
+.timeline::after {
+  background: radial-gradient(closest-side at 50% 0%,
+    rgba(0, 140, 255, 0.25) 0%,
+    rgba(0, 140, 255, 0.12) 25%,
+    rgba(0, 140, 255, 0.04) 45%,
+    rgba(0, 140, 255, 0.00) 70%
+  );
+  opacity: 0.8;
+}
+
+/* ===== End Darker Gradient ===== */
+
+</style>
+ </head>
+ <body>
+  <div class="page">
+   <!-- Selection inputs (CSS-only state) -->
+   <input checked="" class="state" id="s-none" name="sel" type="radio"/>
+   <input class="state" id="s-nstu" name="sel" type="radio"/>
+   <input class="state" id="s-itmo" name="sel" type="radio"/>
+   <input class="state" id="s-ivl-dev" name="sel" type="radio"/>
+   <input class="state" id="s-gap" name="sel" type="radio"/>
+   <input class="state" id="s-bsxr" name="sel" type="radio"/>
+   <input class="state" id="s-ivl-lead" name="sel" type="radio"/>
+   <div class="container">
+    <div class="grid">
+     <!-- Resume -->
+     <aside aria-label="Резюме" class="resume card pad" data-i18n-attr="aria-label:aria_resume">
+      <div class="lang-switch">
+       <button class="lang-btn" id="langToggle" type="button">
+        EN
+       </button>
+      </div>
+      <div class="profile">
+       <div aria-label="Фото" class="avatar" data-i18n-attr="aria-label:aria_photo">
+        <img alt="Фото Никиты Ярославцева" data-i18n-attr="alt:alt_photo" src="Photo.png"/>
+       </div>
+       <div class="name">
+        <h1 data-i18n="name">
+         Никита Ярославцев
+        </h1>
+        <p data-i18n="role">
+         Unreal Engine Developer
+        </p>
+       </div>
+      </div>
+      <h3 data-i18n="h_about">
+       О себе
+      </h3>
+      <p data-i18n-html="about_p" style="text-align: justify;">
+       Устремлённый разработчик игр. Верю, что неподдельный интерес к играм может привести к большим успехам в разработке.
+      </p>
+      <h3 data-i18n="h_skills">
+       Навыки
+      </h3>
+      <div class="chips">
+       <span class="chip">
+        Unreal Engine C++
+       </span>
+       <span class="chip">
+        Unreal Engine Blueprints
+       </span>
+       <span class="chip">
+        Gameplay Ability System
+       </span>
+       <span class="chip">
+        Behavior Tree
+       </span>
+       <span class="chip">
+        Animation Blueprints
+       </span>
+       <span class="chip">
+        UMG
+       </span>
+       <span class="chip">
+        Unreal Insights
+       </span>
+       <span class="chip">
+        Git / Perforce
+       </span>
+      </div>
+      <h3 data-i18n="h_langs">
+       Языки
+      </h3>
+      <div class="lang">
+       <div class="lang-row">
+        <span data-i18n="lang_ru">
+         Русский
+        </span>
+        <span data-i18n="lang_native">
+         Родной
+        </span>
+       </div>
+       <div class="lang-row">
+        <span data-i18n="lang_en">
+         Английский
+        </span>
+        <span>
+         B2
+        </span>
+       </div>
+      </div>
+      <h3 data-i18n="h_contacts">
+       Контакты
+      </h3>
+      <p>
+       📞+7 964-096-0690
+       <br/>
+       <span data-i18n="label_telegram">
+        Telegram:
+       </span>
+       <a class="link" href="https://t.me/YaroslavtsevNick" rel="noreferrer" target="_blank">
+        t.me/YaroslavtsevNick
+       </a>
+       <br/>
+       ✉
+       <a class="link" href="mailto:yaroslavtsevnik2000@gmail.com">
+        yaroslavtsevnik2000@gmail.com
+       </a>
+       <br/>
+       <span data-i18n="label_github">
+        GitHub:
+       </span>
+       <a class="link" href="https://github.com/Yar-ick" rel="noreferrer" target="_blank">
+        github.com/Yar-ick
+       </a>
+       <br/>
+       <span data-i18n="label_linkedin">
+        LinkedIn:
+       </span>
+       <a class="link" href="https://linkedin.com/in/yaroslavtsevnick" rel="noreferrer" target="_blank">
+        linkedin.com/in/yaroslavtsevnick
+       </a>
+      </p>
+     </aside>
+     <!-- Panels -->
+     <div aria-label="Описание точки" data-i18n-attr="aria-label:aria_point_desc">
+      <!-- Default panel when none is selected -->
+      <section aria-label="Интерактивное резюме" class="panel card" data-i18n-attr="aria-label:aria_interactive_resume" id="p-none">
+       <h2 data-i18n="pnone_h2">
+        Интерактивное резюме
+       </h2>
+       <div class="meta" data-i18n="pnone_meta">
+        Таймлайн + Карта
+       </div>
+       <p data-i18n-html="pnone_p" style="text-align: justify;">
+        Добро пожаловать, дорогой гость! 👋
+        <br/>
+        <br/>
+        Снизу располагается таймлайн с точками, которые связаны с важными моментами в моём образовании и рабочем опыте. Справа располагается карта с географическим расположением данных мест.
+        <br/>
+        <br/>
+        Нажмите на интересующую вас точку на таймлайне или на карте.
+       </p>
+      </section>
+      <section aria-label="НГТУ" class="panel card" data-i18n-attr="aria-label:aria_nstu" id="p-nstu">
+       <label aria-label="Закрыть" class="close" data-i18n-attr="aria-label:aria_close" for="s-none">
+        ✕
+       </label>
+       <div class="hero">
+        <img alt="" src="NSTU.png"/>
+       </div>
+       <h2>
+        <a class="link" data-i18n="nstu_h2" href="https://www.nstu.ru//">
+         НГТУ
+        </a>
+       </h2>
+       <div class="meta" data-i18n="nstu_meta">
+        2018 – 2022 • Новосибирск
+       </div>
+       <p data-i18n-html="nstu_p" style="text-align: justify;">
+        Факультет автоматики и вычислительной техники. Программная инженерия.
+        <br/>
+        <br/>
+        Приобретены ключевые навыки в программировании и проектировании архитектуры приложений. Написана дипломная работа на движке Unity. Решено поступать в магистратуру для развития в игровой разработке.
+       </p>
+       <div class="nav-arrows nav-arrows--single">
+        <label aria-label="Следующая точка" class="arrow" data-i18n-attr="aria-label:aria_next_point" for="s-itmo">
+         →
+        </label>
+       </div>
+      </section>
+      <section aria-label="ИТМО" class="panel card" data-i18n-attr="aria-label:aria_itmo" id="p-itmo">
+       <label aria-label="Закрыть" class="close" data-i18n-attr="aria-label:aria_close" for="s-none">
+        ✕
+       </label>
+       <div class="hero">
+        <img alt="" src="ITMO.png"/>
+       </div>
+       <h2>
+        <a class="link" data-i18n="itmo_h2" href="https://itmo.ru/">
+         Университет ИТМО
+        </a>
+       </h2>
+       <div class="meta" data-i18n="itmo_meta">
+        2022 – 2024 • Санкт-Петербург
+       </div>
+       <p data-i18n-html="itmo_p" style="text-align: justify;">
+        Школа разработки видеоигр. Технологии разработки компьютерных игр.
+        <br/>
+        <br/>
+        Углубленная подготовка по компьютерной графике, разработке игр и геймдизайну.
+       </p>
+       <div class="nav-arrows">
+        <label aria-label="Предыдущая точка" class="arrow" data-i18n-attr="aria-label:aria_prev_point" for="s-nstu">
+         ←
+        </label>
+        <label aria-label="Следующая точка" class="arrow" data-i18n-attr="aria-label:aria_next_point" for="s-ivl-dev">
+         →
+        </label>
+       </div>
+      </section>
+      <section aria-label="IVL — Developer" class="panel card" data-i18n-attr="aria-label:aria_ivl_dev" id="p-ivl-dev">
+       <label aria-label="Закрыть" class="close" data-i18n-attr="aria-label:aria_close" for="s-none">
+        ✕
+       </label>
+       <div class="hero">
+        <img alt="" src="IVL.png"/>
+       </div>
+       <h2>
+        <a class="link" href="https://interactivevislab.com/ru">
+         Interactive Visualization Lab
+        </a>
+       </h2>
+       <div class="meta" data-i18n="ivl_dev_meta">
+        Июнь 2023 – Февраль 2024 • Unreal Engine Developer • Санкт-Петербург
+       </div>
+       <p data-i18n-html="ivl_dev_p">
+        • Разработка AR приложения на IOS (взаимодействие с интерактивными объектами в пространстве, трекинг маркеров, UI);
+        <br/>
+        • Разработка Desktop приложения на Windows (реализация пользовательского флоу через стейт машины, асинхронный парсинг JSON, приведение кода к SOLID принципам, исправление комплексных багов, UI).
+       </p>
+       <div class="nav-arrows">
+        <label aria-label="Предыдущая точка" class="arrow" data-i18n-attr="aria-label:aria_prev_point" for="s-itmo">
+         ←
+        </label>
+        <label aria-label="Следующая точка" class="arrow" data-i18n-attr="aria-label:aria_next_point" for="s-gap">
+         →
+        </label>
+       </div>
+      </section>
+      <section aria-label="Game Art Pioneers" class="panel card" data-i18n-attr="aria-label:aria_gap" id="p-gap">
+       <label aria-label="Закрыть" class="close" data-i18n-attr="aria-label:aria_close" for="s-none">
+        ✕
+       </label>
+       <div class="hero">
+        <img alt="" src="GAP.png"/>
+       </div>
+       <h2>
+        <a class="link" href="https://gameartpioneers.com/">
+         Game Art Pioneers
+        </a>
+       </h2>
+       <div class="meta" data-i18n="gap_meta">
+        Февраль 2024 – Май 2024 • Unreal Engine Developer • Москва
+       </div>
+       <p data-i18n-html="gap_p">
+        • Разработка систем динамичного плавания, паркура, боевого распределения юнитов и искусственного интеллекта;
+        <br/>
+        • R&D плагинов для создания диалоговых систем, а затем участие в разработке;
+        <br/>
+        • Перевод кода из Blueprints в С++ для ускорения, асинхронная подгрузка ассетов, устранение избыточных Hard References;
+        <br/>
+        • Исправление багов, ведение технической документации;
+       </p>
+       <div class="nav-arrows">
+        <label aria-label="Предыдущая точка" class="arrow" data-i18n-attr="aria-label:aria_prev_point" for="s-ivl-dev">
+         ←
+        </label>
+        <label aria-label="Следующая точка" class="arrow" data-i18n-attr="aria-label:aria_next_point" for="s-bsxr">
+         →
+        </label>
+       </div>
+      </section>
+      <section aria-label="Blockchain Sports XR" class="panel card" data-i18n-attr="aria-label:aria_bsxr" id="p-bsxr">
+       <label aria-label="Закрыть" class="close" data-i18n-attr="aria-label:aria_close" for="s-none">
+        ✕
+       </label>
+       <div class="hero">
+        <img alt="" src="BSXR.png"/>
+       </div>
+       <h2>
+        <a class="link" href="https://xr.bcsports.io/">
+         Blockchain Sports XR
+        </a>
+       </h2>
+       <div class="meta" data-i18n="bsxr_meta_1">
+        Июнь 2024 - Октябрь 2024 • Unreal Engine Developer • Москва
+       </div>
+       <p data-i18n-html="bsxr_p_1">
+        • Разработка игровых механик многопользовательского гоночного симулятора в VR (Vehicle Movement Component, Modular Game Features, Listen Server);
+        <br/>
+        • Разработка искусственного интеллекта (Behavior Tree);
+        <br/>
+        • Разработка системы для сбора игровой статистики;
+        <br/>
+        • Рефакторинг и оптимизация игрового кода (перевод кода из Blueprints в С++);
+        <br/>
+        • Профилирование ЦПУ для последующей оптимизации кода.
+        <br/>
+        <br/>
+       </p>
+       <div class="meta" data-i18n="bsxr_meta_2">
+        Ноябрь 2024 - Февраль 2025 • Unreal Engine Team Lead • Москва
+       </div>
+       <p data-i18n-html="bsxr_p_2">
+        • Разработка игровой архитектуры многопользовательского шутера в VR (Dedicated Server);
+        <br/>
+        • Организация рабочих процессов для эффективной разработки и коммуникации команды, распределение задач с учётом сильных сторон разработчиков для ускорения разработки, формирование технической дорожной карты;
+        <br/>
+        • Профилирование ЦПУ для выявления бутылочных горлышек;
+        <br/>
+        • Ведение технической документации с участием технического геймдизайнера.
+       </p>
+       <div class="nav-arrows">
+        <label aria-label="Предыдущая точка" class="arrow" data-i18n-attr="aria-label:aria_prev_point" for="s-gap">
+         ←
+        </label>
+        <label aria-label="Следующая точка" class="arrow" data-i18n-attr="aria-label:aria_next_point" for="s-ivl-lead">
+         →
+        </label>
+       </div>
+      </section>
+      <section aria-label="IVL — Team Lead" class="panel card" data-i18n-attr="aria-label:aria_ivl_lead" id="p-ivl-lead">
+       <label aria-label="Закрыть" class="close" data-i18n-attr="aria-label:aria_close" for="s-none">
+        ✕
+       </label>
+       <div class="hero">
+        <img alt="" src="IVL.png"/>
+       </div>
+       <h2>
+        <a class="link" href="https://interactivevislab.com/ru">
+         Interactive Visualization Lab
+        </a>
+       </h2>
+       <div class="meta" data-i18n="ivl_lead_meta">
+        Март 2025 – н.в. • Unreal Engine Team Lead • Санкт-Петербург
+       </div>
+       <p data-i18n-html="ivl_lead_p">
+        • Поддержка архитектуры Desktop приложения на Windows с переработкой легаси под новые нужды продукта, участие в разработке комплексных задач;
+        <br/>
+        • Проектирование новых фич, запрашиваемых от команды продукта;
+        <br/>
+        • Оптимизация рабочих процессов для минимизирования времени на отчётность;
+        <br/>
+        • Формирование технической дорожной карты, распределение сроков для реалистичной разработки без переработок;
+        <br/>
+        • Ведение технической документации, формирование Blueprint и С++ стайлгайдов.
+       </p>
+       <div class="nav-arrows nav-arrows--single">
+        <label aria-label="Предыдущая точка" class="arrow" data-i18n-attr="aria-label:aria_prev_point" for="s-bsxr">
+         ←
+        </label>
+       </div>
+      </section>
+     </div>
+     <!-- Map -->
+     <div aria-label="Карта" class="card" data-i18n-attr="aria-label:aria_map">
+      <div aria-label="Карта Евразии" class="map-wrap" data-i18n-attr="aria-label:aria_map_eurasia">
+       <div aria-hidden="true" class="mapLayer">
+        <label class="pin" data-city="Новосибирск" data-i18n-attr="data-title:pin_nstu; data-city:city_nsk" data-title="НГТУ" for="s-nstu" style="left: 69%; top: 40.5%" tabindex="0">
+        </label>
+        <!-- Санкт-Петербург -->
+        <label class="pin" data-city="Санкт-Петербург" data-i18n-attr="data-title:pin_itmo; data-city:city_spb" data-title="ИТМО" for="s-itmo" style="left: 55.5%; top: 40.0%" tabindex="0">
+        </label>
+        <label class="pin" data-city="Санкт-Петербург" data-i18n-attr="data-title:pin_ivl; data-city:city_spb" data-title="Interactive Visualization Lab" for="s-ivl-dev" style="left: 55.0%; top: 40.35%" tabindex="0">
+        </label>
+        <!-- Москва -->
+        <label class="pin" data-city="Москва" data-i18n-attr="data-title:pin_gap; data-city:city_msk" data-title="Game Art Pioneers" for="s-gap" style="left: 57.2%; top: 41.0%" tabindex="0">
+        </label>
+        <label class="pin" data-city="Москва" data-i18n-attr="data-title:pin_bsxr; data-city:city_msk" data-title="Blockchain Sports XR" for="s-bsxr" style="left: 57.5%; top: 40.9%" tabindex="0">
+        </label>
+       </div>
+      </div>
+     </div>
+    </div>
+   </div>
+   <!-- Timeline -->
+   <div aria-label="Таймлайн" class="timeline" data-i18n-attr="aria-label:aria_timeline">
+    <div class="timeline-inner">
+     <div class="track">
+      <div aria-hidden="true" class="line">
+      </div>
+      <div class="events">
+       <label aria-label="НГТУ 2018" class="event" data-i18n-attr="aria-label:aria_event_nstu" for="s-nstu">
+        <div class="dot">
+        </div>
+        <span class="date">
+         2018
+        </span>
+       </label>
+       <label aria-label="ИТМО 2022" class="event" data-i18n-attr="aria-label:aria_event_itmo" for="s-itmo">
+        <div class="dot">
+        </div>
+        <span class="date">
+         2022
+        </span>
+       </label>
+       <label aria-label="IVL 06.2023" class="event" data-i18n-attr="aria-label:aria_event_ivl" for="s-ivl-dev">
+        <div class="dot">
+        </div>
+        <span class="date">
+         06.2023
+        </span>
+       </label>
+       <label aria-label="GAP 02.2024" class="event" data-i18n-attr="aria-label:aria_event_gap" for="s-gap">
+        <div class="dot">
+        </div>
+        <span class="date">
+         02.2024
+        </span>
+       </label>
+       <label aria-label="BSXR 06.2024" class="event" data-i18n-attr="aria-label:aria_event_bsxr" for="s-bsxr">
+        <div class="dot">
+        </div>
+        <span class="date">
+         06.2024
+        </span>
+       </label>
+       <label aria-label="IVL Lead 03.2025" class="event" data-i18n-attr="aria-label:aria_event_ivl_lead" for="s-ivl-lead">
+        <div class="dot">
+        </div>
+        <span class="date">
+         03.2025
+        </span>
+       </label>
+      </div>
+     </div>
+    </div>
+   </div>
+  </div>
+  <script>
+   (function () {
+  const dict = {
+    ru: {
+      __title: "Nikita Yaroslavtsev — Interactive CV",
+      __toggle: "EN",
+      aria_resume: "Резюме",
+      aria_photo: "Фото",
+      alt_photo: "Фото Никиты Ярославцева",
+      name: "Никита Ярославцев",
+      role: "Unreal Engine Developer",
+      h_about: "О себе",
+      h_skills: "Навыки",
+      h_langs: "Языки",
+      h_contacts: "Контакты",
+      about_p: "Устремлённый разработчик игр. Верю, что неподдельный интерес к играм может привести к большим успехам в разработке.",
+      lang_ru: "Русский",
+      lang_native: "Родной",
+      lang_en: "Английский",
+      label_telegram: "Telegram:",
+      label_github: "GitHub:",
+      label_linkedin: "LinkedIn:",
+      aria_point_desc: "Описание точки",
+      aria_interactive_resume: "Интерактивное резюме",
+      pnone_h2: "Интерактивное резюме",
+      pnone_meta: "Таймлайн + Карта",
+      pnone_p: "Добро пожаловать, дорогой гость! 👋<br><br>Снизу располагается таймлайн с точками, которые связаны с важными моментами в моём образовании и рабочем опыте. Справа располагается карта с географическим расположением данных мест.<br><br>Нажмите на интересующую вас точку на таймлайне или на карте.",
+      aria_nstu: "НГТУ",
+      aria_itmo: "ИТМО",
+      aria_ivl_dev: "IVL — Developer",
+      aria_gap: "Game Art Pioneers",
+      aria_bsxr: "Blockchain Sports XR",
+      aria_ivl_lead: "IVL — Team Lead",
+      aria_close: "Закрыть",
+      aria_prev_point: "Предыдущая точка",
+      aria_next_point: "Следующая точка",
+      nstu_h2: "НГТУ",
+      nstu_meta: "2018 – 2022 • Новосибирск",
+      nstu_p: "Факультет автоматики и вычислительной техники. Программная инженерия.<br><br>Приобретены ключевые навыки в программировании и проектировании архитектуры приложений. Написана дипломная работа на движке Unity. Решено поступать в магистратуру для развития в игровой разработке.",
+      itmo_h2: "Университет ИТМО",
+      itmo_meta: "2022 – 2024 • Санкт-Петербург",
+      itmo_p: "Школа разработки видеоигр. Технологии разработки компьютерных игр.<br><br>Углубленная подготовка по компьютерной графике, разработке игр и геймдизайну.",
+      ivl_dev_meta: "Июнь 2023 – Февраль 2024 • Unreal Engine Developer • Санкт-Петербург",
+      ivl_dev_p: "• Разработка AR приложения на IOS (взаимодействие с интерактивными объектами в пространстве, трекинг маркеров, UI);<br>• Разработка Desktop приложения на Windows (реализация пользовательского флоу через стейт машины, асинхронный парсинг JSON, приведение кода к SOLID принципам, исправление комплексных багов, UI).",
+      gap_meta: "Февраль 2024 – Май 2024 • Unreal Engine Developer • Москва",
+      gap_p: "• Разработка систем динамичного плавания, паркура, боевого распределения юнитов и искусственного интеллекта;<br>• R&amp;D плагинов для создания диалоговых систем, а затем участие в разработке;<br>• Перевод кода из Blueprints в С++ для ускорения, асинхронная подгрузка ассетов, устранение избыточных Hard References;<br>• Исправление багов, ведение технической документации;",
+      bsxr_meta_1: "Июнь 2024 - Октябрь 2024 • Unreal Engine Developer • Москва",
+      bsxr_p_1: "• Разработка игровых механик многопользовательского гоночного симулятора в VR (Vehicle Movement Component, Modular Game Features, Listen Server);<br>• Разработка искусственного интеллекта (Behavior Tree);<br>• Разработка системы для сбора игровой статистики;<br>• Рефакторинг и оптимизация игрового кода (перевод кода из Blueprints в С++);<br>• Профилирование ЦПУ для последующей оптимизации кода.<br><br>",
+      bsxr_meta_2: "Ноябрь 2024 - Февраль 2025 • Unreal Engine Team Lead • Москва",
+      bsxr_p_2: "• Разработка игровой архитектуры многопользовательского шутера в VR (Dedicated Server);<br>• Организация рабочих процессов для эффективной разработки и коммуникации команды, распределение задач с учётом сильных сторон разработчиков для ускорения разработки, формирование технической дорожной карты;<br>• Профилирование ЦПУ для выявления бутылочных горлышек;<br>• Ведение технической документации с участием технического геймдизайнера.",
+      ivl_lead_meta: "Март 2025 – н.в. • Unreal Engine Team Lead • Санкт-Петербург",
+      ivl_lead_p: "• Поддержка архитектуры Desktop приложения на Windows с переработкой легаси под новые нужды продукта, участие в разработке комплексных задач;<br>• Проектирование новых фич, запрашиваемых от команды продукта;<br>• Оптимизация рабочих процессов для минимизирования времени на отчётность;<br>• Формирование технической дорожной карты, распределение сроков для реалистичной разработки без переработок;<br>• Ведение технической документации, формирование Blueprint и С++ стайлгайдов.",
+      aria_map: "Карта",
+      aria_map_eurasia: "Карта Евразии",
+      city_nsk: "Новосибирск",
+      city_spb: "Санкт-Петербург",
+      city_msk: "Москва",
+      pin_nstu: "НГТУ",
+      pin_itmo: "ИТМО",
+      pin_ivl: "Interactive Visualization Lab",
+      pin_gap: "Game Art Pioneers",
+      pin_bsxr: "Blockchain Sports XR",
+      aria_timeline: "Таймлайн",
+      aria_event_nstu: "НГТУ 2018",
+      aria_event_itmo: "ИТМО 2022",
+      aria_event_ivl: "IVL 06.2023",
+      aria_event_gap: "GAP 02.2024",
+      aria_event_bsxr: "BSXR 06.2024",
+      aria_event_ivl_lead: "IVL Lead 03.2025"
+    },
+    en: {
+      __title: "Nikita Yaroslavtsev — Interactive CV",
+      __toggle: "RU",
+      aria_resume: "Resume",
+      aria_photo: "Photo",
+      alt_photo: "Photo of Nikita Yaroslavtsev",
+      name: "Nikita Yaroslavtsev",
+      role: "Unreal Engine Developer",
+      h_about: "About me",
+      h_skills: "Skills",
+      h_langs: "Languages",
+      h_contacts: "Contacts",
+      about_p: "An aspiring game developer. I believe that genuine interest in games can lead to great success in development.",
+      lang_ru: "Russian",
+      lang_native: "Native",
+      lang_en: "English",
+      label_telegram: "Telegram:",
+      label_github: "GitHub:",
+      label_linkedin: "LinkedIn:",
+      aria_point_desc: "Point description",
+      aria_interactive_resume: "Interactive CV",
+      pnone_h2: "Interactive CV",
+      pnone_meta: "Timeline + Map",
+      pnone_p: "Welcome, dear guest! 👋<br><br>At the bottom there is a timeline with points that are connected with important moments in my education and work experience. On the right there is a map with the geographical location of these places.<br><br>Click the point you are interested in on the timeline or on the map.",
+      aria_nstu: "NSTU",
+      aria_itmo: "ITMO",
+      aria_ivl_dev: "IVL — Developer",
+      aria_gap: "Game Art Pioneers",
+      aria_bsxr: "Blockchain Sports XR",
+      aria_ivl_lead: "IVL — Team Lead",
+      aria_close: "Close",
+      aria_prev_point: "Previous point",
+      aria_next_point: "Next point",
+      nstu_h2: "NSTU",
+      nstu_meta: "2018 – 2022 • Novosibirsk",
+      nstu_p: "Faculty of Automation and Computer Engineering. Software Engineering.<br><br>Key skills in programming and designing application architecture were acquired. A diploma thesis was written on the Unity engine. It was decided to enroll in a master's program for development in game development.",
+      itmo_h2: "ITMO University",
+      itmo_meta: "2022 – 2024 • Saint Petersburg",
+      itmo_p: "School of game development. Technologies for computer game development.<br><br>In-depth training in computer graphics, game development and game design.",
+      ivl_dev_meta: "June 2023 – February 2024 • Unreal Engine Developer • Saint Petersburg",
+      ivl_dev_p: "• Development of an AR application on iOS (interaction with interactive objects in space, marker tracking, UI);<br>• Development of a Desktop application on Windows (implementation of user flow via state machines, asynchronous JSON parsing, bringing code to SOLID principles, fixing complex bugs, UI).",
+      gap_meta: "February 2024 – May 2024 • Unreal Engine Developer • Moscow",
+      gap_p: "• Development of systems of dynamic swimming, parkour, combat distribution of units and artificial intelligence;<br>• R&amp;D of plugins for creating dialogue systems, and then participation in development;<br>• Translation of code from Blueprints to C++ for acceleration, asynchronous loading of assets, elimination of redundant Hard References;<br>• Bug fixing, maintaining technical documentation;",
+      bsxr_meta_1: "June 2024 - October 2024 • Unreal Engine Developer • Moscow",
+      bsxr_p_1: "• Development of game mechanics of a multiplayer racing simulator in VR (Vehicle Movement Component, Modular Game Features, Listen Server);<br>• Development of artificial intelligence (Behavior Tree);<br>• Development of a system for collecting game statistics;<br>• Refactoring and optimization of game code (translation of code from Blueprints to C++);<br>• CPU profiling for subsequent code optimization.<br><br>",
+      bsxr_meta_2: "November 2024 - February 2025 • Unreal Engine Team Lead • Moscow",
+      bsxr_p_2: "• Development of game architecture of a multiplayer shooter in VR (Dedicated Server);<br>• Organization of work processes for effective development and team communication, distribution of tasks taking into account the strengths of developers to speed up development, formation of a technical roadmap;<br>• CPU profiling to identify bottlenecks;<br>• Maintaining technical documentation with the participation of a technical game designer.",
+      ivl_lead_meta: "March 2025 – present • Unreal Engine Team Lead • Saint Petersburg",
+      ivl_lead_p: "• Support of the architecture of a Desktop application on Windows with reworking of legacy for the new needs of the product, participation in the development of complex tasks;<br>• Designing new features requested from the product team;<br>• Optimization of work processes to minimize time for reporting;<br>• Formation of a technical roadmap, distribution of deadlines for realistic development without overtime;<br>• Maintaining technical documentation, formation of Blueprint and C++ style guides.",
+      aria_map: "Map",
+      aria_map_eurasia: "Map of Eurasia",
+      city_nsk: "Novosibirsk",
+      city_spb: "Saint Petersburg",
+      city_msk: "Moscow",
+      pin_nstu: "NSTU",
+      pin_itmo: "ITMO",
+      pin_ivl: "Interactive Visualization Lab",
+      pin_gap: "Game Art Pioneers",
+      pin_bsxr: "Blockchain Sports XR",
+      aria_timeline: "Timeline",
+      aria_event_nstu: "NSTU 2018",
+      aria_event_itmo: "ITMO 2022",
+      aria_event_ivl: "IVL 06.2023",
+      aria_event_gap: "GAP 02.2024",
+      aria_event_bsxr: "BSXR 06.2024",
+      aria_event_ivl_lead: "IVL Lead 03.2025"
+    }
+  };
+
+  function applyLang(lang) {
+    const t = dict[lang] || dict.ru;
+
+    document.documentElement.lang = lang;
+    document.title = t.__title;
+
+    const btn = document.getElementById("langToggle");
+    if (btn) btn.textContent = t.__toggle;
+
+    document.querySelectorAll("[data-i18n]").forEach((el) => {
+      const k = el.getAttribute("data-i18n");
+      if (k && t[k] != null) el.textContent = t[k];
+    });
+
+    document.querySelectorAll("[data-i18n-html]").forEach((el) => {
+      const k = el.getAttribute("data-i18n-html");
+      if (k && t[k] != null) el.innerHTML = t[k];
+    });
+
+    document.querySelectorAll("[data-i18n-attr]").forEach((el) => {
+      const specAll = (el.getAttribute("data-i18n-attr") || "").split(";");
+      specAll.forEach((spec) => {
+        spec = (spec || "").trim();
+        if (!spec) return;
+        const idx = spec.indexOf(":");
+        if (idx === -1) return;
+        const attr = spec.slice(0, idx).trim();
+        const k = spec.slice(idx + 1).trim();
+        if (!attr || !k) return;
+        if (t[k] != null) el.setAttribute(attr, t[k]);
+      });
+    });
+
+    localStorage.setItem("cv_lang", lang);
+  }
+
+  const saved = localStorage.getItem("cv_lang");
+  applyLang(saved === "en" || saved === "ru" ? saved : "ru");
+
+  const btn = document.getElementById("langToggle");
+  if (btn) {
+    btn.addEventListener("click", () => {
+      const current = document.documentElement.lang === "en" ? "en" : "ru";
+      applyLang(current === "en" ? "ru" : "en");
+    });
+  }
+})();
+  </script>
+ </body>
+</html>
