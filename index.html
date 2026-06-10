@@ -7,7 +7,7 @@
   <link rel="icon" href="DocumentIcon.png">
   
   <title>
-   Nikita Yaroslavtsev — Interactive CV
+   Nikita Yaroslavtsev CV
   </title>
   <style>
    :root {
@@ -74,19 +74,26 @@
       .panel { display: none; position: sticky; top: 20px; padding: 18px; }
       .panel h2 { margin: 0 0 6px; }
       .meta { font-size: 12px; color: var(--muted); margin-bottom: 10px; }
+      .panel-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+        margin-bottom: 12px;
+      }
       .close {
-        float: right;
         text-decoration: none;
         color: #fff;
         border: 1px solid var(--border);
-        padding: 4px 10px;
+        padding: 5px 8px;
         border-radius: 10px;
         cursor: pointer;
         user-select: none;
         z-index: 2;
-        margin-bottom: 10px;
+        height: fit-content;
+        flex-shrink: 0;
       }
-      .nav-arrows { margin-top: 16px; display: flex; justify-content: space-between; gap: 10px; }
+      .nav-arrows { display: flex; justify-content: space-between; gap: 10px; flex: 1; }
       .arrow {
         flex: 1 1 0;
         display: inline-flex;
@@ -96,10 +103,11 @@
         border: 1px solid var(--border);
         background: rgba(255, 255, 255, 0.06);
         color: rgba(255, 255, 255, 0.9);
-        padding: 10px 12px;
+        padding: 5px 10px;
         border-radius: 14px;
         cursor: pointer;
         user-select: none;
+        height: fit-content;
       }
       .arrow:hover { background: rgba(255, 255, 255, 0.1); }
       .arrow span { opacity: 0.8; font-size: 13px; }
@@ -845,9 +853,12 @@ body {
        </p>
       </section>
       <section aria-label="НГТУ" class="panel card" data-i18n-attr="aria-label:aria_nstu" id="p-nstu">
-       <label aria-label="Закрыть" class="close" data-i18n-attr="aria-label:aria_close" for="s-none">
-        ✕
-       </label>
+       <div class="panel-header">
+         <div class="nav-arrows nav-arrows--single">
+          <label aria-label="Следующая точка" class="arrow" data-i18n-attr="aria-label:aria_next_point" for="s-itmo">→</label>
+         </div>
+        <label aria-label="Закрыть" class="close" data-i18n-attr="aria-label:aria_close" for="s-none">✕</label>
+       </div>
        <div class="hero">
         <img alt="" src="NSTU.png"/>
        </div>
@@ -865,16 +876,15 @@ body {
         <br/>
         Приобретены ключевые навыки в программировании и проектировании архитектуры приложений. Написана дипломная работа на движке Unity. Решено поступать в магистратуру для развития в игровой разработке.
        </p>
-       <div class="nav-arrows nav-arrows--single">
-        <label aria-label="Следующая точка" class="arrow" data-i18n-attr="aria-label:aria_next_point" for="s-itmo">
-         →
-        </label>
-       </div>
       </section>
       <section aria-label="ИТМО" class="panel card" data-i18n-attr="aria-label:aria_itmo" id="p-itmo">
-       <label aria-label="Закрыть" class="close" data-i18n-attr="aria-label:aria_close" for="s-none">
-        ✕
-       </label>
+       <div class="panel-header">
+         <div class="nav-arrows">
+          <label aria-label="Предыдущая точка" class="arrow" data-i18n-attr="aria-label:aria_prev_point" for="s-nstu">←</label>
+          <label aria-label="Следующая точка" class="arrow" data-i18n-attr="aria-label:aria_next_point" for="s-ivl-dev">→</label>
+         </div>
+        <label aria-label="Закрыть" class="close" data-i18n-attr="aria-label:aria_close" for="s-none">✕</label>
+       </div>
        <div class="hero">
         <img alt="" src="ITMO.png"/>
        </div>
@@ -892,19 +902,15 @@ body {
         <br/>
         Углубленная подготовка по компьютерной графике, разработке игр и геймдизайну.
        </p>
-       <div class="nav-arrows">
-        <label aria-label="Предыдущая точка" class="arrow" data-i18n-attr="aria-label:aria_prev_point" for="s-nstu">
-         ←
-        </label>
-        <label aria-label="Следующая точка" class="arrow" data-i18n-attr="aria-label:aria_next_point" for="s-ivl-dev">
-         →
-        </label>
-       </div>
       </section>
       <section aria-label="IVL — Developer" class="panel card" data-i18n-attr="aria-label:aria_ivl_dev" id="p-ivl-dev">
-       <label aria-label="Закрыть" class="close" data-i18n-attr="aria-label:aria_close" for="s-none">
-        ✕
-       </label>
+       <div class="panel-header">
+         <div class="nav-arrows">
+          <label aria-label="Предыдущая точка" class="arrow" data-i18n-attr="aria-label:aria_prev_point" for="s-itmo">←</label>
+          <label aria-label="Следующая точка" class="arrow" data-i18n-attr="aria-label:aria_next_point" for="s-gap">→</label>
+         </div>
+        <label aria-label="Закрыть" class="close" data-i18n-attr="aria-label:aria_close" for="s-none">✕</label>
+       </div>
        <div class="hero">
         <img alt="" src="IVL.png"/>
        </div>
@@ -916,24 +922,16 @@ body {
        <div class="meta" data-i18n="ivl_dev_meta">
         Июнь 2023 – Февраль 2024 • Unreal Engine Developer • Санкт-Петербург
        </div>
-       <p data-i18n-html="ivl_dev_p">
-        • Разработка AR приложения на IOS (взаимодействие с интерактивными объектами в пространстве, трекинг маркеров, UI);
-        <br/>
-        • Разработка Desktop приложения на Windows (реализация пользовательского флоу через стейт машины, асинхронный парсинг JSON, приведение кода к SOLID принципам, исправление комплексных багов, UI).
-       </p>
-       <div class="nav-arrows">
-        <label aria-label="Предыдущая точка" class="arrow" data-i18n-attr="aria-label:aria_prev_point" for="s-itmo">
-         ←
-        </label>
-        <label aria-label="Следующая точка" class="arrow" data-i18n-attr="aria-label:aria_next_point" for="s-gap">
-         →
-        </label>
-       </div>
+       <p data-i18n-html="ivl_dev_p">Ахматова Digital и rtim.city</p>
       </section>
       <section aria-label="Game Art Pioneers" class="panel card" data-i18n-attr="aria-label:aria_gap" id="p-gap">
-       <label aria-label="Закрыть" class="close" data-i18n-attr="aria-label:aria_close" for="s-none">
-        ✕
-       </label>
+       <div class="panel-header">
+         <div class="nav-arrows">
+          <label aria-label="Предыдущая точка" class="arrow" data-i18n-attr="aria-label:aria_prev_point" for="s-ivl-dev">←</label>
+          <label aria-label="Следующая точка" class="arrow" data-i18n-attr="aria-label:aria_next_point" for="s-bsxr">→</label>
+         </div>
+        <label aria-label="Закрыть" class="close" data-i18n-attr="aria-label:aria_close" for="s-none">✕</label>
+       </div>
        <div class="hero">
         <img alt="" src="GAP.png"/>
        </div>
@@ -945,28 +943,16 @@ body {
        <div class="meta" data-i18n="gap_meta">
         Февраль 2024 – Май 2024 • Unreal Engine Developer • Москва
        </div>
-       <p data-i18n-html="gap_p">
-        • Разработка систем динамичного плавания, паркура, боевого распределения юнитов и искусственного интеллекта;
-        <br/>
-        • R&D плагинов для создания диалоговых систем, а затем участие в разработке;
-        <br/>
-        • Перевод кода из Blueprints в С++ для ускорения, асинхронная подгрузка ассетов, устранение избыточных Hard References;
-        <br/>
-        • Исправление багов, ведение технической документации;
-       </p>
-       <div class="nav-arrows">
-        <label aria-label="Предыдущая точка" class="arrow" data-i18n-attr="aria-label:aria_prev_point" for="s-ivl-dev">
-         ←
-        </label>
-        <label aria-label="Следующая точка" class="arrow" data-i18n-attr="aria-label:aria_next_point" for="s-bsxr">
-         →
-        </label>
-       </div>
+       <p data-i18n-html="gap_p">3D Action RPG</p>
       </section>
       <section aria-label="Blockchain Sports XR" class="panel card" data-i18n-attr="aria-label:aria_bsxr" id="p-bsxr">
-       <label aria-label="Закрыть" class="close" data-i18n-attr="aria-label:aria_close" for="s-none">
-        ✕
-       </label>
+       <div class="panel-header">
+         <div class="nav-arrows">
+          <label aria-label="Предыдущая точка" class="arrow" data-i18n-attr="aria-label:aria_prev_point" for="s-gap">←</label>
+          <label aria-label="Следующая точка" class="arrow" data-i18n-attr="aria-label:aria_next_point" for="s-ivl-lead">→</label>
+         </div>
+        <label aria-label="Закрыть" class="close" data-i18n-attr="aria-label:aria_close" for="s-none">✕</label>
+       </div>
        <div class="hero">
         <img alt="" src="BSXR.png"/>
        </div>
@@ -975,47 +961,27 @@ body {
          Blockchain Sports XR
         </a>
        </h2>
-       <div class="meta" data-i18n="bsxr_meta_1">
-        Июнь 2024 - Октябрь 2024 • Unreal Engine Developer • Москва
-       </div>
-       <p data-i18n-html="bsxr_p_1">
-        • Разработка игровых механик многопользовательского гоночного симулятора в VR (Vehicle Movement Component, Modular Game Features, Listen Server);
-        <br/>
-        • Разработка искусственного интеллекта (Behavior Tree);
-        <br/>
-        • Разработка системы для сбора игровой статистики;
-        <br/>
-        • Рефакторинг и оптимизация игрового кода (перевод кода из Blueprints в С++);
-        <br/>
-        • Профилирование ЦПУ для последующей оптимизации кода.
-        <br/>
-        <br/>
-       </p>
        <div class="meta" data-i18n="bsxr_meta_2">
         Ноябрь 2024 - Февраль 2025 • Unreal Engine Team Lead • Москва
        </div>
-       <p data-i18n-html="bsxr_p_2">
-        • Разработка игровой архитектуры многопользовательского шутера в VR (Dedicated Server);
-        <br/>
-        • Организация рабочих процессов для эффективной разработки и коммуникации команды, распределение задач с учётом сильных сторон разработчиков для ускорения разработки, формирование технической дорожной карты;
-        <br/>
-        • Профилирование ЦПУ для выявления бутылочных горлышек;
-        <br/>
-        • Ведение технической документации с участием технического геймдизайнера.
-       </p>
-       <div class="nav-arrows">
-        <label aria-label="Предыдущая точка" class="arrow" data-i18n-attr="aria-label:aria_prev_point" for="s-gap">
-         ←
-        </label>
-        <label aria-label="Следующая точка" class="arrow" data-i18n-attr="aria-label:aria_next_point" for="s-ivl-lead">
-         →
-        </label>
+       <p data-i18n-html="bsxr_p_2">VR Multiplayer Shooter</p>
+       <br/>
+       <div class="meta" data-i18n="bsxr_meta_1">
+        Июнь 2024 - Октябрь 2024 • Unreal Engine Developer • Москва
        </div>
+       <p data-i18n-html="bsxr_p_1">VR Multiplayer Racing Simulator</p>
       </section>
       <section aria-label="IVL — Team Lead" class="panel card" data-i18n-attr="aria-label:aria_ivl_lead" id="p-ivl-lead">
-       <label aria-label="Закрыть" class="close" data-i18n-attr="aria-label:aria_close" for="s-none">
-        ✕
-       </label>
+       <div class="panel-header">
+         <div class="nav-arrows nav-arrows--single">
+          <label aria-label="Предыдущая точка" class="arrow" data-i18n-attr="aria-label:aria_prev_point" for="s-bsxr">
+           ←
+          </label>
+         </div>
+        <label aria-label="Закрыть" class="close" data-i18n-attr="aria-label:aria_close" for="s-none">
+         ✕
+        </label>
+       </div>
        <div class="hero">
         <img alt="" src="IVL.png"/>
        </div>
@@ -1027,22 +993,7 @@ body {
        <div class="meta" data-i18n="ivl_lead_meta">
         Март 2025 – н.в. • Unreal Engine Team Lead • Санкт-Петербург
        </div>
-       <p data-i18n-html="ivl_lead_p">
-        • Поддержка архитектуры Desktop приложения на Windows с переработкой легаси под новые нужды продукта, участие в разработке комплексных задач;
-        <br/>
-        • Проектирование новых фич, запрашиваемых от команды продукта;
-        <br/>
-        • Оптимизация рабочих процессов для минимизирования времени на отчётность;
-        <br/>
-        • Формирование технической дорожной карты, распределение сроков для реалистичной разработки без переработок;
-        <br/>
-        • Ведение технической документации, формирование Blueprint и С++ стайлгайдов.
-       </p>
-       <div class="nav-arrows nav-arrows--single">
-        <label aria-label="Предыдущая точка" class="arrow" data-i18n-attr="aria-label:aria_prev_point" for="s-bsxr">
-         ←
-        </label>
-       </div>
+       <p data-i18n-html="ivl_lead_p">rtim.city</p>
       </section>
      </div>
      <!-- Map -->
@@ -1124,7 +1075,7 @@ body {
    (function () {
   const dict = {
     ru: {
-      __title: "Nikita Yaroslavtsev — Interactive CV",
+      __title: "Nikita Yaroslavtsev CV",
       __toggle: "EN",
       aria_resume: "Резюме",
       aria_photo: "Фото",
@@ -1161,17 +1112,84 @@ body {
       nstu_p: "Факультет автоматики и вычислительной техники. Программная инженерия.<br><br>Приобретены ключевые навыки в программировании и проектировании архитектуры приложений. Написана дипломная работа на движке Unity. Решено поступать в магистратуру для развития в игровой разработке.",
       itmo_h2: "Университет ИТМО",
       itmo_meta: "2022 – 2024 • Санкт-Петербург",
-      itmo_p: "Школа разработки видеоигр. Технологии разработки компьютерных игр.<br><br>Углубленная подготовка по компьютерной графике, разработке игр и геймдизайну.",
+      itmo_p: "Школа разработки видеоигр. Технологии разработки компьютерных игр.<br><br>Углубленная подготовка по компьютерной графике, геймдизайну, разработке игр на Unreal Engine 5, Unity и кастомных игровых движках.",
+      
       ivl_dev_meta: "Июнь 2023 – Февраль 2024 • Unreal Engine Developer • Санкт-Петербург",
-      ivl_dev_p: "• Разработка AR приложения на IOS (взаимодействие с интерактивными объектами в пространстве, трекинг маркеров, UI);<br>• Разработка Desktop приложения на Windows (реализация пользовательского флоу через стейт машины, асинхронный парсинг JSON, приведение кода к SOLID принципам, исправление комплексных багов, UI).",
+      ivl_dev_p: 
+        "Разрабатывал AR приложение на IOS для музея (Ахматова Digital):<br/>" +
+        "• Создал основную архитектуру приложения для лёгкой интеграции контента.<br/>" +
+        "• Реализовал пользовательский флоу с использованием стейт машины Logic Driver.<br/>" +
+        "• Реализовал логику трекинга маркеров и взаимодействия с интерактивными объектами в пространстве.<br/>" +
+        "• Разработал весь пользовательский интерфейс в соответствии с дизайном.<br/>" +
+        "• Разработал дебажные инструменты для удобного внутреннего тестирования AR фич.<br/>" +
+        "• Провёл рефакторинг программного кода с учётом SOLID принципов.<br/>" +
+        "• Проводил тестирование и демонстрацию работы приложения в музее.<br/>" +
+        "• Сформировал техническую документацию для передачи знаний о проекте следующему разработчику.<br/>" +
+        "<br/>" +
+        "Разрабатывал Archviz приложение для Windows (rtim.city).<br/>" +
+        "• Реализовал часть пользовательского флоу с использованием стейт машины Logic Driver.<br/>" +
+        "• Реализовал асинхронный парсинг JSON файлов для ускорения загрузки проекта в 2 раза.<br/>" +
+        "• Исправил большое количество комплексных багов.<br/>" +
+        "• Разработал многоуровневый пользовательский интерфейс с предварительным рефакторингом и соблюдением SOLID принципов.<br/>" +
+        "• Перевёл часть кода из Blueprints в С++ для ускорения работы приложения и облегчения дальнейшей разработки несколькими людьми.",
+
       gap_meta: "Февраль 2024 – Май 2024 • Unreal Engine Developer • Москва",
-      gap_p: "• Разработка систем динамичного плавания, паркура, боевого распределения юнитов и искусственного интеллекта;<br>• R&amp;D плагинов для создания диалоговых систем, а затем участие в разработке;<br>• Перевод кода из Blueprints в С++ для ускорения, асинхронная подгрузка ассетов, устранение избыточных Hard References;<br>• Исправление багов, ведение технической документации;",
+      gap_p: 
+        "Разрабатывал 3D Action RPG для Windows:<br/>" +
+        "• Разработал систему динамичного плавания с использованием плагина Fluid Flux.<br/>" +
+        "• Разработал систему паркура для вертикального и горизонтального перемещения.<br/>" +
+        "• Разработал систему боевого распределения юнитов для симуляции реалистичных схваток.<br/>" +
+        "• Реализовал искусственный интеллект нескольких врагов через Behavior Tree.<br/>" +
+        "• Провёл R&D технологий для создания диалоговых систем (Articy Draft, Logic Driver).<br/>" +
+        "• Провёл глобальный рефакторинг и оптимизацию игрового кода (устранение нарушений инкапсуляции, устранение лишних Hard References, асинхронная загрузка ассетов, перевод кода из Blueprints в С++).<br/>" +
+        "• Сформировал техническую документацию по VCS Perforce и принципам разработки для грамотной работы с памятью и минимизацией Hard References.",
+      
       bsxr_meta_1: "Июнь 2024 - Октябрь 2024 • Unreal Engine Developer • Москва",
-      bsxr_p_1: "• Разработка игровых механик многопользовательского гоночного симулятора в VR (Vehicle Movement Component, Modular Game Features, Listen Server);<br>• Разработка искусственного интеллекта (Behavior Tree);<br>• Разработка системы для сбора игровой статистики;<br>• Рефакторинг и оптимизация игрового кода (перевод кода из Blueprints в С++);<br>• Профилирование ЦПУ для последующей оптимизации кода.<br><br>",
+      bsxr_p_1: 
+        "Разрабатывал многопользовательский гоночный симулятор на мотоциклах в VR для Meta Quest 3:<br/>" +
+        "• Работал с Vehicle Movement Component, Modular Game Features, MetaSound, Listen Server и сборкой под Android.<br/>" +
+        "• Разработал лобби уровень для создания игровых сессий и подключения к ним.<br/>" +
+        "• Разработал системы для вычисления мест игроков в гонке с прохождением чекпоинтов и сбора игровой статистики.<br/>" +
+        "• Разработал интерфейс приборной панели мотоцикла с выводом скорости, передачи и количества оборотов двигателя.<br/>" +
+        "• Разработал механику призрака после респавна гонщика.<br/>" +
+        "• Разработал механику для вхождения в АФК режим.<br/>" +
+        "• Разработал систему вибраций котроллеров в зависимости от физических материалов поверхностей.<br/>" +
+        "• Разработал систему для воспроизведения звуков столкновения и ветра в зависимости от скорости движения (MetaSound).<br/>" +
+        "• Разработал механику для финиша гонщика с интерполяцией к стартовой позиции.<br/>" +
+        "• Улучшил искусственный интеллект ботов для более реалистичного поведения в гонке (Behavior Tree).<br/>" +
+        "• Профилировал ЦПУ для нахождения бутылочных горлышек (Unreal Insights).<br/>" +
+        "• Провёл рефакторинг и оптимизацию игрового кода с ускорением некоторых участков кода в 5 раз.<br/>",
+      
       bsxr_meta_2: "Ноябрь 2024 - Февраль 2025 • Unreal Engine Team Lead • Москва",
-      bsxr_p_2: "• Разработка игровой архитектуры многопользовательского шутера в VR (Dedicated Server);<br>• Организация рабочих процессов для эффективной разработки и коммуникации команды, распределение задач с учётом сильных сторон разработчиков для ускорения разработки, формирование технической дорожной карты;<br>• Профилирование ЦПУ для выявления бутылочных горлышек;<br>• Ведение технической документации с участием технического геймдизайнера.",
+      bsxr_p_2: 
+        "Руководил разработкой многопользовательского шутера в VR для Meta Quest 3:<br/>" +
+        "• Работал с Modular Game Features, Dedicated Server с использованием исходников Unreal Engine и сборкой под Android.<br/>" +
+        "• Управлял командой из 10 разработчиков, геймдизайнера, технического геймдизайнера, нарративного дизайнера и 3 QA специалистов.<br/>" +
+        "• Оптимизировал рабочие процессы для эффективной разработки и коммуникации команды, задокументировал новый пайплайн разработки.<br/>" +
+        "• Распределял задачи с учётом сильных сторон разработчиков для ускорения разработки.<br/>" +
+        "• Сформировал техническую дорожную карту на полгода.<br/>" +
+        "• Профилировал ЦПУ для выявления бутылочных горлышек (Unreal Insights и Meta Performance Profiler).<br/>" +
+        "• Провёл глобальный рефакторинг и оптимизацию игрового кода с формированием основной архитектуры в С++.<br/>" +
+        "• Вёл техническую документацию по игровым механикам с участием технического геймдизайнера.<br/>",
+      
       ivl_lead_meta: "Март 2025 – н.в. • Unreal Engine Team Lead • Санкт-Петербург",
-      ivl_lead_p: "• Поддержка архитектуры Desktop приложения на Windows с переработкой легаси под новые нужды продукта, участие в разработке комплексных задач;<br>• Проектирование новых фич, запрашиваемых от команды продукта;<br>• Оптимизация рабочих процессов для минимизирования времени на отчётность;<br>• Формирование технической дорожной карты, распределение сроков для реалистичной разработки без переработок;<br>• Ведение технической документации, формирование Blueprint и С++ стайлгайдов.",
+      ivl_lead_p: 
+        "Руковожу аутсорсной разработкой Archviz приложения для Windows (rtim.city):<br/>" +
+        "• Управлял командой из 3 разработчиков, техартиста, UI/UX дизайнера и QA специалиста.<br/>" +
+        "• Переработал устаревшую архитектуру под новые нужды продукта, что дало ускорение внедрения новых сущностей в 3 раза.<br/>" +
+        "• Проектировал комплексные фичи для визуализации 3Д тайлов c использованием Cesium и редактирования геометрии зданий в режиме 3Д.<br/>" +
+        "• Улучшил CI/CD-процессы на базе TeamCity, снизив сложность процесса сборки и доставки заказчику.<br/>" +
+        "• Улучшил качество и поддерживаемость кода за счёт регулярных ревью C++ и Blueprint кода, внедрив лучшие принципы разработки.<br/>" +
+        "• Оптимизировал рабочие процессы для минимизации времени на ежедневную отчётность.<br/>" +
+        "• Сформировал удобную систему тегов и группировки задач в трекере.<br/>" +
+        "• Сформировал техническую дорожную карту на год.<br/>" +
+        "• Оценивал сроки новых функциональных требований и распределял задачи для реалистичной разработки без переработок.<br/>" +
+        "• Проводил перформанс ревью участников команды.<br/>" +
+        "• Перевёл проект с версии Unreal Engine 5.3 на 5.5 с устранением возникших проблем.<br/>" +
+        "• Исправил большое количество комплексных и критичных багов.<br/>" +
+        "• Сформировал Blueprints и С++ стайлгайды.<br/>" +
+        "• Вёл техническую документацию, покрывающую неоднозначные программные модули.",
+      
       aria_map: "Карта",
       aria_map_eurasia: "Карта Евразии",
       city_nsk: "Новосибирск",
@@ -1191,7 +1209,7 @@ body {
       aria_event_ivl_lead: "IVL Lead 03.2025"
     },
     en: {
-      __title: "Nikita Yaroslavtsev — Interactive CV",
+      __title: "Nikita Yaroslavtsev CV",
       __toggle: "RU",
       aria_resume: "Resume",
       aria_photo: "Photo",
@@ -1228,17 +1246,84 @@ body {
       nstu_p: "Faculty of Automation and Computer Engineering. Software Engineering.<br><br>Key skills in programming and designing application architecture were acquired. A diploma thesis was written on the Unity engine. It was decided to enroll in a master's program for development in game development.",
       itmo_h2: "ITMO University",
       itmo_meta: "2022 – 2024 • Saint Petersburg",
-      itmo_p: "School of game development. Technologies for computer game development.<br><br>In-depth training in computer graphics, game development and game design.",
+      itmo_p: "School of game development. Technologies for computer game development.<br><br>In-depth training in computer graphics, game design, game development using Unreal Engine 5, Unity and custom game engines.",
       ivl_dev_meta: "June 2023 – February 2024 • Unreal Engine Developer • Saint Petersburg",
-      ivl_dev_p: "• Development of an AR application on iOS (interaction with interactive objects in space, marker tracking, UI);<br>• Development of a Desktop application on Windows (implementation of user flow via state machines, asynchronous JSON parsing, bringing code to SOLID principles, fixing complex bugs, UI).",
+
+      ivl_dev_p: 
+        "Developed an AR application for iOS (Akhmatova Digital):<br/>" +
+        "• Designed the core application architecture to enable seamless content integration.<br/>" +
+        "• Implemented the user flow using the Logic Driver state machine.<br/>" +
+        "• Developed marker tracking and interaction systems for AR objects within the environment.<br/>" +
+        "• Created the entire user interface according to the provided design.<br/>" +
+        "• Developed debugging tools to facilitate internal testing of AR features.<br/>" +
+        "• Refactored the codebase following SOLID principles.<br/>" +
+        "• Conducted application testing and live demonstrations in the museum environment.<br/>" +
+        "• Prepared technical documentation to ensure smooth knowledge transfer to the next developer.<br/>" +
+        "<br/>" +
+        "Developed an archviz application for Windows (rtim.city):<br/>" +
+        "• Implemented parts of the user flow using the Logic Driver state machine.<br/>" +
+        "• Developed asynchronous JSON parsing, reducing project loading times by 50%.<br/>" +
+        "• Fixed a large number of complex bugs.<br/>" +
+        "• Implemented a multi-level user interface with refactoring the codebase in accordance with SOLID principles.<br/>" +
+        "• Translated parts of the codebase from Blueprints to C++ to improve application performance and simplify collaborative development.",
+      
       gap_meta: "February 2024 – May 2024 • Unreal Engine Developer • Moscow",
-      gap_p: "• Development of systems of dynamic swimming, parkour, combat distribution of units and artificial intelligence;<br>• R&amp;D of plugins for creating dialogue systems, and then participation in development;<br>• Translation of code from Blueprints to C++ for acceleration, asynchronous loading of assets, elimination of redundant Hard References;<br>• Bug fixing, maintaining technical documentation;",
+      gap_p: 
+        "Developed a 3D Action RPG for Windows:<br/>" +
+        "• Developed a dynamic swimming system using the Fluid Flux plugin.<br/>" +
+        "• Implemented a parkour system for both vertical and horizontal traversal.<br/>" +
+        "• Developed a combat positioning system for AI units to simulate realistic encounters.<br/>" +
+        "• Implemented AI behavior for multiple enemy types using Behavior Trees.<br/>" +
+        "• Conducted R&D on dialogue system technologies, including Articy Draft and Logic Driver.<br/>" +
+        "• Performed extensive codebase refactoring and optimization, including resolving encapsulation issues, eliminating unnecessary hard references, implementing asynchronous asset loading, and migrating code from Blueprints to C++.<br/>" +
+        "• Created technical documentation covering Perforce VCS workflows and development best practices for memory management and hard reference reduction.",
+      
       bsxr_meta_1: "June 2024 - October 2024 • Unreal Engine Developer • Moscow",
-      bsxr_p_1: "• Development of game mechanics of a multiplayer racing simulator in VR (Vehicle Movement Component, Modular Game Features, Listen Server);<br>• Development of artificial intelligence (Behavior Tree);<br>• Development of a system for collecting game statistics;<br>• Refactoring and optimization of game code (translation of code from Blueprints to C++);<br>• CPU profiling for subsequent code optimization.<br><br>",
+      bsxr_p_1: 
+        "Developed a Multiplayer VR Motorcycle Racing Simulator for Meta Quest 3:<br/>" +
+        "• Worked with Vehicle Movement Component, Modular Game Features, MetaSound, Listen Server architecture, and Android deployment.<br/>" +
+        "• Developed a lobby level for creating and joining multiplayer game sessions.<br/>" +
+        "• Designed and implemented race position tracking systems based on checkpoint progression, as well as gameplay statistics collection.<br/>" +
+        "• Developed the motorcycle dashboard UI, displaying speed, gear, and engine RPM.<br/>" +
+        "• Implemented a ghost rider mechanic following player respawn.<br/>" +
+        "• Developed an AFK mode system.<br/>" +
+        "• Created a controller haptics system driven by the physical materials of surface types.<br/>" +
+        "• Developed dynamic collision and wind audio systems based on vehicle speed using MetaSound.<br/>" +
+        "• Implemented a race finish mechanic with interpolation back to the starting position.<br/>" +
+        "• Enhanced bot AI behavior using Behavior Trees to achieve more realistic racing performance.<br/>" +
+        "• Profiled CPU performance and identified bottlenecks using Unreal Insights.<br/>" +
+        "• Refactored and optimized the gameplay codebase, improving the performance of certain systems by up to 5x.",
+      
       bsxr_meta_2: "November 2024 - February 2025 • Unreal Engine Team Lead • Moscow",
-      bsxr_p_2: "• Development of game architecture of a multiplayer shooter in VR (Dedicated Server);<br>• Organization of work processes for effective development and team communication, distribution of tasks taking into account the strengths of developers to speed up development, formation of a technical roadmap;<br>• CPU profiling to identify bottlenecks;<br>• Maintaining technical documentation with the participation of a technical game designer.",
+      bsxr_p_2: 
+        "Led the development of a Multiplayer VR Shooter for Meta Quest 3:<br/>" +
+        "• Worked with Modular Game Features, Dedicated Server with Unreal Engine source code, and Android deployment.<br/>" +
+        "• Managed a multidisciplinary team consisting of 10 developers, a game designer, a technical game designer, a narrative designer, and 3 QA specialists.<br/>" +
+        "• Optimized development workflows and team communication processes, documenting and establishing a new production pipeline.<br/>" +
+        "• Assigned tasks based on individual developers strengths to maximize team efficiency and accelerate development.<br/>" +
+        "• Defined and maintained a six-month technical roadmap.<br/>" +
+        "• Profiled CPU performance to identify bottlenecks using Unreal Insights and Meta Performance Profiler.<br/>" +
+        "• Led large-scale codebase refactoring and optimization efforts, establishing the project's core architecture in C++.<br/>" +
+        "• Maintained technical documentation for gameplay systems in collaboration with the technical game designer.",
+      
       ivl_lead_meta: "March 2025 – present • Unreal Engine Team Lead • Saint Petersburg",
-      ivl_lead_p: "• Support of the architecture of a Desktop application on Windows with reworking of legacy for the new needs of the product, participation in the development of complex tasks;<br>• Designing new features requested from the product team;<br>• Optimization of work processes to minimize time for reporting;<br>• Formation of a technical roadmap, distribution of deadlines for realistic development without overtime;<br>• Maintaining technical documentation, formation of Blueprint and C++ style guides.",
+      ivl_lead_p: 
+        "Leading outsourced development of an Archviz application for Windows (rtim.city):<br/>" +
+        "• Managed a team of 3 developers, a technical artist, a UI/UX designer, and a QA specialist.<br/>" +
+        "• Refactored legacy architecture to meet new product requirements, resulting in a 3x faster implementation of new entities.<br/>" +
+        "• Designed complex features for 3D tile visualization using Cesium and 3D building geometry editing.<br/>" +
+        "• Improved TeamCity-based CI/CD workflows for Unreal Engine development, reducing friction in build and deployment processes.<br/>" +
+        "• Improved code quality and maintainability through regular C++ and Blueprint code reviews, introducing shared engineering practices across the team.<br/>" +
+        "• Optimized workflows to minimize time spent on daily reporting.<br/>" +
+        "• Designed a clear tagging and task-grouping system in the project tracker.<br/>" +
+        "• Created a one-year technical roadmap.<br/>" +
+        "• Estimated timelines for new feature requirements and distributed tasks to ensure realistic development without overtime.<br/>" +
+        "• Conducted performance reviews for team members.<br/>" +
+        "• Migrated the project from Unreal Engine 5.3 to 5.5 and resolved related migration issues.<br/>" +
+        "• Fixed numerous complex and critical bugs.<br/>" +
+        "• Created Blueprint and C++ style guides.<br/>" +
+        "• Maintained technical documentation covering ambiguous and complex software modules.",
+      
       aria_map: "Map",
       aria_map_eurasia: "Map of Eurasia",
       city_nsk: "Novosibirsk",
