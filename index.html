@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 
-<html lang="ru">
+<html lang="en">
  <head>
   <meta charset="utf-8"/>
   <meta content="width=device-width, initial-scale=1" name="viewport"/>
@@ -1345,7 +1345,7 @@ body {
   };
 
   function applyLang(lang) {
-    const t = dict[lang] || dict.ru;
+    const t = dict[lang] || dict.en;
 
     document.documentElement.lang = lang;
     document.title = t.__title;
@@ -1381,7 +1381,7 @@ body {
   }
 
   const saved = localStorage.getItem("cv_lang");
-  applyLang(saved === "en" || saved === "ru" ? saved : "ru");
+  applyLang(saved === "en" || saved === "ru" ? saved : "en");
 
   const btn = document.getElementById("langToggle");
   if (btn) {
